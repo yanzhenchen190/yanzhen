@@ -1,0 +1,56 @@
+/* 設定整體的底色 */
+body { 
+    background-color: lightblue; 
+    margin: 0; 
+    padding: 0; 
+    font-family: sans-serif; 
+}
+
+/* 標題居中 */
+h1 { text-align: center; margin: 10px 0; }
+
+/* 容器：設定滾動與寬度 */
+#viewport { 
+    width: 95vw; 
+    height: 75vh; 
+    overflow: auto; /* 允許滾輪上下捲動 */
+    margin: auto; 
+    border: 2px solid white; 
+}
+
+/* 照片牆：CSS Grid 核心排版 */
+#gallery {
+    display: grid; 
+    /* 每行至少10張，寬度平分 */
+    grid-template-columns: repeat(auto-fill, minmax(10%, 1fr)); 
+    gap: 5px; /* 照片間距 */
+    transform-origin: center;
+    transition: transform 0.2s;
+}
+
+/* 照片外觀 */
+.photo { 
+    width: 100%; 
+    height: 150px; /* 固定高度讓整齊 */
+    object-fit: cover; /* 讓照片填滿格子不變形 */
+    display: block; 
+    border-radius: 0; /* 確保沒有圓角 */
+    cursor: pointer;
+}
+
+/* 點擊放大後的遮罩層 */
+#lightbox {
+    display: none; 
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); /* 半透明黑底 */
+    z-index: 1000; 
+    text-align: center;
+}
+
+#lightbox img { 
+    max-width: 90%; 
+    max-height: 90%; 
+    margin-top: 2%; 
+}
