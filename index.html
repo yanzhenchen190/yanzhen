@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>婚禮第一桌---照片牆</title>
+    <style>
+        /* 基礎設定 */
+        body { 
+            background-color: lightblue; 
+            margin: 0; 
+            padding: 0; 
+            font-family: "Microsoft JhengHei", sans-serif;
+            overflow-y: scroll; /* 允許滾輪上下捲動 */
+        }
+
+        /* 頂部固定區：標題與音樂 */
+        header {
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 20px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        h1 { margin: 0 0 10px 0; color: #333; }
+        .audio-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* 照片牆區域 */
+        #gallery {
+            display: grid;
+            /* 強制每行 10 張照片，間距 5px */
+            grid-template-columns: repeat(10, 1fr); 
+            gap: 5px;
+            padding: 10px;
+        }
+
+        /* 照片樣式：維持比例、不修圓角、不歪斜 */
+        .photo-item {
+            width: 80%;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        .photo-item:hover { opacity: 0.8; }
+        .photo-item img {
+            width: 100%;
+            height: 150px; /* 固定格子高度，讓排版整齊 */
+            object-fit: contain; /* 確保直式橫式照片都完整顯示不裁切 */
+            background: rgba(255,255,255,0.1);
+            display: block;
+        }
+
+        /* 放大燈箱層 */
+        #lightbox {
+            display: none; /* 平時隱藏 */
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+        #lightbox img {
+            max-width: 95%;
+            max-height: 95%;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>婚禮第一桌---照片牆</h1>
+    <audio id="bgm" src="{{ url_for('static', filename='music.mp3') }}" loop></audio>
+    <button class="audio-btn" onclick="toggleMusic()">🎵 播放 / 暫停音樂</button>
+</header>
+
+<div id="gallery">
+    {% for img in images %}
+    <div class="photo-item" onclick="openZoom('{{ url_for('static', filename='images/' + img) }}')">
+        <img src="{{ url_for('static', filename='images/' + img) }}" alt="Wedding Photo">
+    </div>
+    {% endfor %}
+</div>
+
+<div id="lightbox" onclick="closeZoom()">
+    <img id="zoom-img" src="" alt="Zoomed">
+</div>
+
+<script>
+    // 1. 音樂控制
+    function toggleMusic() {
+        const audio = document.getElementById('bgm');
+        if (audio.paused) {
+            audio.play();
+        } else {
+            audio.pause();
+        }
+    }
+
+    // 2. 點擊放大邏輯
+    const lightbox = document.getElementById('lightbox');
+    const zoomImg = document.getElementById('zoom-img');
+
+    function openZoom(src) {
+        zoomImg.src = src; // 設定放大圖的路徑
+        lightbox.style.display = 'flex'; // 顯示放大層
+        document.body.style.overflow = 'hidden'; // 放大時禁止底層捲動
+    }
+
+    function closeZoom() {
+        lightbox.style.display = 'none'; // 隱藏放大層
+        document.body.style.overflow = 'auto'; // 恢復捲動
+    }
+</script>
+
+</body>
+</html>
